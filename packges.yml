@@ -1,0 +1,27 @@
+- name: install php mariadb 
+  hosts: dev,test,prod
+  tasks:
+    - name: first task
+      yum:
+       name: 
+        - mariadb
+        - php
+       state: present
+
+- name: install Dev Tools
+  hosts: dev
+  tasks: 
+    - name: second task
+      yum:
+       name: '@Development Tools'
+       state: present
+
+- name: update all packages 
+  hosts: dev
+  tasks:
+    - name: third task
+      yum: 
+       name: '*'
+       state: latest
+     
+

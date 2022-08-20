@@ -1,0 +1,34 @@
+---
+- name: partition serverb
+  hosts: test,dev
+  tasks: 
+
+    - block:
+       - name: use lvol
+         lvol:
+          lv: data
+          vg: search
+          size: 1500m
+
+      rescue:
+       - name: show error message if size not applicable
+         debug:
+          msg: Could not create partition of that size
+       - name: second attempt
+         lvol:                                       
+          lv: data
+          vg: search                                    
+          size: 600m                           
+       - name: format
+         filesystem:
+          device: /dev/search/data
+          fstype: ext4
+      when: ansible_lvm.vgs.search is defined
+     
+    - name: show error messag if the volume group is not there
+      debug:
+        msg: Volume Group does not exist 
+      when: '"search" not in ansible_lvm.vgs'
+        
+
+

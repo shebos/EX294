@@ -1,0 +1,5 @@
+- src: 9brandon2.haproxy
+  name: balancer
+
+- src: devopsstore.php
+  name: phpinfo 

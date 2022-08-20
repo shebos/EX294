@@ -1,0 +1,17 @@
+---
+- name: adjust date and time
+  hosts: all
+  vars:
+    timesync_ntp_servers:
+      - hostname: classroom.example.com
+        iburst: yes
+  roles:
+    - rhel-system-roles.timesync
+   
+  pre_tasks: 
+    - name: add the correct time zone 
+      timezone:
+       name: Africa/Cairo
+
+    - name: reboot
+      reboot: 

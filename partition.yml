@@ -1,0 +1,50 @@
+---
+- name: partition servera vdb
+  hosts: serverc.lab.example.com 
+  tasks: 
+   - name: first attempt
+     block:
+     - name: use parted
+       parted:
+        device: /dev/vdb
+        number: 1
+        part_end: 1500MiB
+        state: present
+
+     rescue:
+     - name: show error message if size not applicable
+       debug:
+        msg: Could not create partition of that size
+     - name: use parted                              
+       parted:                                       
+        device: /dev/vdb
+        number: 1                                    
+        part_end: 800MiB                           
+        state: present
+    
+     - name: format
+       filesystem:
+        device: /dev/vdb1
+        fstype: ext4
+     - name: create the mountpoint
+       file:
+        path: /newpart
+        state: directory
+     - name: mount
+       mount:
+        src: /dev/vdb1
+        path: /newpart
+        fstype: ext4
+        state: mounted   
+        opts: defaults
+     when: ansible_devices.vdb.partitions is defined
+
+
+     
+   - name: show error messag if the disk is not there
+     debug:
+      msg: Disk could not be found
+     when: ansible_devices.vdb is undefined
+        
+
+

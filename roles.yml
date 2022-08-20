@@ -1,0 +1,10 @@
+---
+- name: configure load balancer 
+  hosts: balancer
+  roles: 
+   - balancer
+
+- name: run php role on webservers
+  hosts: webservers
+  roles: 
+   - phpinfo 
