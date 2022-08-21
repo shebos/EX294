@@ -1,0 +1,34 @@
+---
+ - name: playbook to get some H/W info 
+   hosts: all
+   tasks:
+
+   # - name: download the repor
+    #  get_url:
+     #  url:
+      # dest:
+
+    - name: use this task instead to download
+      copy: 
+       src: report.txt
+       dest: /root/hwreport.txt
+
+    - name: use lineinfile to replace the value for each host   
+      lineinfile:
+       path: /root/hwreport.txt
+       regexp: "{{item.name}}"
+       line: "{{ item.name }} = {{ item.value }}"
+      loop:
+       - name: HOST
+         value: "{{ inventory_hostname }}"
+       - name: MEMORY
+         value: "{{ ansible_memtotal_mb }}"
+       - name: BIOS
+         value: "{{ ansible_bios_version }}"
+       - name: VDA_DISK_SIZE
+         value: "{{ ansible_devices.vda.size | default ('None') }}"
+       - name: VDB_DISK_SIZE  
+         value: "{{ ansible_devices.vdb.size | default ('None') }}"
+       - name: VDD_DISK_SIZE  
+         value: "{{ ansible_devices.vdd.size | default ('None') }}"
+
