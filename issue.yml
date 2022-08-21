@@ -1,0 +1,24 @@
+---
+- name: file to eidt /etc/issue
+  hosts: dev,test,prod
+  tasks: 
+
+   - name: edit the /etc/issue 
+     copy:
+      dest: /etc/issue
+      content: Development
+     when: inventory_hostname in groups['dev']
+
+   - name: edit the /etc/issue
+     copy:
+      dest: /etc/issue
+      content: Test
+     when: inventory_hostname in groups['test']
+
+   - name: edit the /etc/issue
+     copy:
+      dest: /etc/issue
+      content: Production
+     when: inventory_hostname in groups['prod']
+  
+

@@ -1,0 +1,36 @@
+---
+ - name: play to cretae webdev dir
+   hosts: dev
+   roles:
+    - apache
+   tasks: 
+
+    - name: create webdev group
+      group:
+       name: webdev
+       state: present
+    
+    - name: create the webdev dir
+      file:
+       path: /webdev
+       state: directory 
+       group: webdev
+       mode: 2775 
+       setype: httpd_sys_content_t
+
+    - name: create symbolic link for webdev
+      file:
+       src: /webdev
+       dest: /var/www/html/webdev
+       state: link 
+
+    - name: craete index file
+      copy:
+       content: 'development'
+       dest: /webdev/index.html 
+    
+    - name: set se linux for webdev
+      sefcontext: 
+       target: '/webdev(/.*)?'
+       setype: httpd_sys_content_t
+       state: present
