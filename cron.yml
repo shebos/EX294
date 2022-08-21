@@ -1,0 +1,14 @@
+---
+ - name: cron task
+   hosts: all
+   tasks:
+
+    - name: run below crom 
+      cron:
+       name: cron log
+       user: student
+       job: logger "EX294 in Progres" 
+       minute: '*/2'
+       state: present
+     
+

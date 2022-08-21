@@ -1,0 +1,46 @@
+---
+ - name: playbook to create users
+   hosts: dev,test
+   vars_files:
+    - user_list.yml 
+    - locker.yml
+   tasks: 
+
+    - name: create the group first 
+      group: 
+       name: devops
+       state: present
+    
+    - name: create users
+      user: 
+       name: "{{ item.name }}"
+       comment: "{{ item.job }}"
+       groups: devops
+       password: "{{ pw_developer | password_hash('sha512') }}"
+       state: present
+      when: item.job == "developer"
+      loop: "{{user}}"
+     
+
+ - name: playbook to create users                              
+   hosts: prod                                    
+   vars_files:                                                 
+    - user_list.yml                                            
+    - locker.yml                                               
+   tasks:                                                      
+                                                               
+    - name: create the group first                             
+      group:                                                   
+       name: manager                                           
+       state: present                                          
+                                                               
+    - name: create users                                       
+      user:                                                    
+       name: "{{ item.name }}"                                 
+       comment: "{{ item.job }}"                               
+       groups: manager                                          
+       password: "{{ pw_manager | password_hash('sha512') }}"
+       state: present
+      when: item.job == "manager"                            
+      loop: "{{user}}"                                         
+                             
