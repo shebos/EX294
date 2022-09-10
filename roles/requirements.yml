@@ -1,0 +1,5 @@
+- src: ome.haproxy
+  name: balancer
+
+- src: geerlingguy.php
+  name: phpinfo

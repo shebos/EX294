@@ -1,0 +1,68 @@
+---
+- name: Ensure HAProxy is installed
+  become: true
+  package:
+    name: "{{ haproxy_package_name }}"
+    state: present
+
+- name: configure haproxy logrotation
+  become: true
+  template:
+    backup: false
+    dest: /etc/logrotate.d/haproxy
+    src: logrotated-haproxy.j2
+    mode: 0644
+
+# TODO: This is still in development- more configuration is needed to prevent
+# some haproxy logs going to the console, and to potentially take account of
+# other apps using the same syslog facility (probably unlikely)
+- name: configure haproxy log file
+  become: true
+  template:
+    backup: false
+    # Deliberately named to overwrite the ubuntu haproxy config:
+    dest: /etc/rsyslog.d/49-haproxy.conf
+    src: rsyslogd-haproxy.j2
+    mode: 0644
+  when: haproxy_syslog_enable
+  notify:
+    - restart rsyslog
+
+- name: Ensure HAProxy is enabled (so init script will start it on Debian).
+  become: true
+  lineinfile:
+    dest: /etc/default/haproxy
+    regexp: "^ENABLED.+$"
+    line: "ENABLED=1"
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: Configure SELinux to allow all connections
+  become: true
+  seboolean:
+    name: haproxy_connect_any
+    state: true
+    persistent: true
+  # selinux_enabled fact is set by ome.selinux_utils
+  # Since this is an external role we can't assume it's been run
+  when: "selinux_enabled | default(False)"
+
+- name: Copy HAProxy configuration in place.
+  become: true
+  template:
+    src: "{{ haproxy_cfg_template }}"
+    dest: /etc/haproxy/haproxy.cfg
+    mode: 0644
+    validate: haproxy -f %s -c -q
+  notify: restart haproxy
+
+- name: Ensure HAProxy is started and enabled on boot.
+  become: true
+  service: name=haproxy state=started enabled=yes
+- name: enable http through FW
+  firewalld:
+   port: 80/tcp
+   state: enabled
+   permanent: true
+   immediate: true 
+  

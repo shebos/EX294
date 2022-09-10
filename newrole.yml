@@ -1,0 +1,5 @@
+---
+- name: role to install apache
+  hosts: webservers
+  roles:
+   - apache

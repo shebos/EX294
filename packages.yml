@@ -1,0 +1,24 @@
+---
+ - name: playbook to install pkgs
+   hosts: dev,test,prod
+   tasks:
+
+    - name: php and maria
+      yum:
+       name: 
+        - php
+        - mariadb 
+       state: present
+
+ - name: install Dev Tools
+   hosts: dev
+   tasks: 
+
+    - name: Dev Tools
+      yum: 
+       name: '@Development tools'
+       state: present
+    - name: update all 
+      yum:
+       name: "*"
+       state: latest

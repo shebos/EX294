@@ -1,0 +1,27 @@
+---
+# tasks file for apache
+- name: install httpd
+  yum:
+   name: httpd
+   state: present
+
+- name: start httpd and FW
+  service:
+   name: "{{item}}"
+   enabled: true
+   state: started 
+  loop:
+   - httpd
+   - firewalld 
+
+- name: enable http through FW
+  firewalld:
+   service: http
+   state: enabled
+   permanent: true
+   immediate: true 
+
+- name: copy template
+  template:
+   src: index.html.j2
+   dest: /var/www/html/index.html

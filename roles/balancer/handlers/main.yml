@@ -1,0 +1,13 @@
+---
+- name: restart rsyslog
+  become: true
+  service:
+    name: rsyslog
+    state: restarted
+  when: haproxy_syslog_enable
+
+- name: restart haproxy
+  become: true
+  service:
+    name: haproxy
+    state: restarted

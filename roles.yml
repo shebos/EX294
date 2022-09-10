@@ -1,0 +1,23 @@
+---
+
+- name: install the php
+  hosts: webservers
+  roles:
+   - phpinfo
+
+- name: install haproxy 
+  hosts: balancer
+  vars:
+   haproxy_frontends:
+   - name: 'hafrontend'
+     address: '*:80'
+     backend: 'habackend'
+   haproxy_backends:
+   - name: 'habackend'
+     servers: 
+      - name: serverc.lab.example.com 
+        address: serverc.lab.example.com:80
+      - name: serverd.lab.example.com
+        address: serverd.lab.example.com:80
+  roles: 
+   - balancer
