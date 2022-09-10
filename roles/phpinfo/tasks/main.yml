@@ -76,7 +76,7 @@
 - include_tasks: configure-opcache.yml
 - include_tasks: configure-fpm.yml
 
-- name: copy j2 temp
-  template:
-   src: php.j2
-   dest: /var/www/html/hello.php
+#- name: copy j2 temp
+#  template:
+#   src: php.j2
+#   dest: /var/www/html/hello.php

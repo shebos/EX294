@@ -1,0 +1,49 @@
+---
+- name: partition playbook
+  hosts: dev
+  tasks: 
+
+   - name: use below block and rescue 
+     block:
+      - name: first attempt
+        parted:
+         device: /dev/vdb
+         number: 1
+         part_end: 1500MiB
+         state: present
+     rescue:
+      - name: show error message if size not doable 
+        debug:
+         msg: Could not create partition of that size
+
+      - name: second attempt
+        parted:                                      
+         device: /dev/vdb                            
+         number: 1                                   
+         part_end: 800MiB                           
+         state: present
+     always: 
+      - name: format
+        filesystem:
+         fstype: ext4
+         device: /dev/vdb1
+        when: '"vdb1" in ansible_devices.vdb.partitions'
+      - name: creta mount
+        file:
+         path: /newpart
+         state: directory 
+      - name: mount
+        mount:
+         path: /newpart
+         src: /dev/vdb1
+         fstype: ext4
+         opts: defaults 
+         state: mounted 
+     when:  ansible_devices.vdb is defined 
+    
+   - name: if disk not there
+     debug: 
+      msg: Disk does not exist
+     when: ansible_devices.vdb is undefined  
+
+
