@@ -1,0 +1,6 @@
+HOST = inventory_host
+MEMORY = total memory in MB
+BIOS = bios version
+VDA_DISK_SIZE = disk size A 
+VDB_DISK_SIZE = disk size B
+VDD_DISK_SIZE = disk size D

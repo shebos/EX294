@@ -1,0 +1,40 @@
+---
+- hosts: dev
+  roles:
+   - apache
+
+  tasks: 
+
+
+   - name: create the group 
+     group:
+      name: webdev
+      state: present
+
+   - name: create dir
+     file:
+      path: /webdev
+      state: directory 
+      group: webdev
+      mode: 2775
+      setype: httpd_sys_content_t
+
+   - name: symlink
+     file:
+      src: /webdev
+      dest: /var/www/html/webdev 
+      state: link
+      force: yes
+
+   - name: content
+     copy:
+      content: Development
+      dest: /webdev/index.html
+
+   - name: set selinux
+     sefcontext:
+      target: '/webdev(/.*)?'
+      setype: httpd_sys_content_t
+      state: present
+
+

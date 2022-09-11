@@ -1,0 +1,33 @@
+---
+- name: playbook of lv
+  hosts: webservers
+  tasks: 
+
+   - name: try 
+     block:
+      - name: first attempt
+        lvol:
+         vg: research
+         lv: data
+         size: 1500m
+     rescue:
+      - name: show error message
+        debug: 
+         msg: size is not doable , try again 
+
+      - name: second attempt
+        lvol:               
+         vg: research       
+         lv: data           
+         size: 800m
+
+      - name: format
+        filesystem:
+         device: /dev/research/data
+         fstype: xfs 
+     when: ansible_lvm.vgs.research is defined 
+
+   - name: show error message
+     debug:
+      msg: Volume Group is not there 
+     when: ansible_lvm.vgs.research is undefined  
