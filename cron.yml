@@ -1,0 +1,10 @@
+---
+- hosts: all
+  tasks:
+   - name: cron task
+     cron: 
+      name: logger 
+      user: student
+      job: logger "EX294 in progress"
+      minute: '*/2'
+     
