@@ -26,7 +26,7 @@
       - name: format
         filesystem:
          fstype: ext4
-         device: /dev/vdb1
+         dev: /dev/vdb1
         when: '"vdb1" in ansible_devices.vdb.partitions'
       - name: creta mount
         file:
