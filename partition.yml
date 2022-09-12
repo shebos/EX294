@@ -27,7 +27,7 @@
         filesystem:
          fstype: ext4
          dev: /dev/vdb1
-        when: '"vdb1" in ansible_devices.vdb.partitions'
+        when: ansible_devices.vdb.partitions is defined 
       - name: creta mount
         file:
          path: /newpart
