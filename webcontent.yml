@@ -36,5 +36,7 @@
       target: '/webdev(/.*)?'
       setype: httpd_sys_content_t
       state: present
+   - name: restorecon
+     command: restorecon -irv /webdev
 
 
